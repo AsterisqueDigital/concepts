@@ -1,0 +1,19 @@
+#!/bin/env node
+// Start anyFetch API server
+"use strict";
+
+// Load server
+var models = require('../models');
+var scraper = require('../lib/scraper');
+
+
+models.sequelize.sync().then(() => {
+  scraper(function(err) {
+    if (err) {
+      console.error('Scraper ended with error', err);
+    }
+    else {
+      console.log('Scraper ended');
+    }
+  });
+});
