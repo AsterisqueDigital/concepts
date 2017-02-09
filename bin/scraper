@@ -4,13 +4,14 @@
 
 // Load server
 var models = require('../models');
-var scraper = require('../lib/scraper');
+var concepts = require('../lib/concepts');
 
 
 models.sequelize.sync().then(() => {
-  scraper(function(err) {
+  concepts.launch(function(err) {
     if (err) {
       console.error('Scraper ended with error', err);
+      console.error(err.stack);
     }
     else {
       console.log('Scraper ended');
