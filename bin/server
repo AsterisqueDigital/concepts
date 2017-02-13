@@ -1,0 +1,56 @@
+#!/bin/env node
+"use strict";
+var express = require('express');
+var app = express();
+var async = require('async');
+
+var models = require('../models');
+
+app.set('views', './views');
+app.set('view engine', 'pug');
+
+app.use('/vis', express.static(__dirname + '/../node_modules/vis/dist'));
+
+app.get('/', function (req, res) {
+  var nodesArray = [];
+  var edgesArray = [];
+  async.waterfall([
+    function getNodes(cb) {
+       models.Node
+        .findAll({
+          where: {
+            depth: null
+          },
+          include: [{
+            model: models.Node,
+            as: 'neighbors',
+          }]
+        })
+        .nodeify(cb)
+    },
+    function cleanNodes(nodes, cb) {
+      nodesArray = nodes.map((entity) => {
+        for(let neighbor in entity.neighbors) {
+          edgesArray.push({from: entity.id, to: neighbor.id});
+        }
+        return {id: entity.id, label: entity.name};
+      })
+    },
+  ], function(err) {
+    if(err) {
+      throw err;
+    }
+    console.log(nodesArray, edgesArray);
+    res.render('graph', {
+      nodes: nodesArray,
+      edges: edgesArray,
+    });
+  })
+
+
+
+});
+
+app.listen(8181, function () {
+  console.log('Example app listening on port 3000!');
+});

@@ -1,5 +1,4 @@
 #!/bin/env node
-// Start anyFetch API server
 "use strict";
 
 // Load server
