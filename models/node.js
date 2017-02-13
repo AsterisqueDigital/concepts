@@ -16,6 +16,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       unique: true,
     },
+    depth: DataTypes.INTEGER,
     french: DataTypes.STRING,
     german: DataTypes.STRING,
     spanish: DataTypes.STRING,
